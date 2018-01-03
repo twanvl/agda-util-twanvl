@@ -16,6 +16,9 @@ open ≡-Reasoning public
 trans-sym : ∀ {a} {A : Set a} {x y z : A} → x ≡ y → z ≡ y → x ≡ z
 trans-sym xy zy = trans xy (sym zy)
 
+_≡⟨_⟩⁻¹_ : ∀ {a} {A : Set a} (x {y z} : A) → x ≡ y → z ≡ y → x ≡ z
+_ ≡⟨ x≡y ⟩⁻¹ y≡z = trans x≡y (sym y≡z)
+
 
 trans-refl : ∀ {a} {A : Set a} {x y : A} → (x≡y : x ≡ y) → trans x≡y refl ≡ x≡y
 trans-refl refl = refl
