@@ -254,18 +254,16 @@ adjoint-bw-fw-adjoint {f = f} {g} fg gf x =
     (sym (cong (g ∘ f) (gf (g x))) ⟨ trans ⟩ cong g (fg (f (g x))) ⟨ trans ⟩ gf (g x))
   ∎
 
-{-
 sym-adjoint : ∀ {a b} {A : Set a} {B : Set b} {f : A → B} {g : B → A} (fg : ∀ x → f (g x) ≡ x) (gf : ∀ x → g (f x) ≡ x)
             → (∀ x → cong g (fg x) ≡ gf (g x))
             → (∀ x → cong f (gf x) ≡ fg (f x))
-sym-adjoint {f = f} {g = g} fg gf adj x =
+sym-adjoint {f = f} {g = g} fg gf gfg x =
   begin
     cong f (gf x)
-  ≡⟨ {!cong (cong f) (sym (adj (f x)))!} ⟩
-    {!cong f (gf (g (f x)))!}
-  ≡⟨ {!!} ⟩
-    {!cong (f ∘ g) (fg (f x)) ⟨ trans ⟩ fg (f x)!}
-  ≡⟨ {!trans-cong-comm-fun adj!} ⟩
+  ≡⟨ adjoint-bw-fw-adjoint {f = g} {g = f} gf fg x ⟩
+    (sym (cong (f ∘ g) (fg (f x))) ⟨ trans ⟩ cong f (gf (g (f x))) ⟨ trans ⟩ fg (f x))
+  ≡⟨ cong (\u → sym (cong (f ∘ g) (fg (f x))) ⟨ trans ⟩ cong f u ⟨ trans ⟩ fg (f x)) (sym (gfg (f x))) ⟩
+    (sym (cong (f ∘ g) (fg (f x))) ⟨ trans ⟩ cong (f ∘ g) (fg (f x)) ⟨ trans ⟩ fg (f x))
+  ≡⟨⟩ -- trans-sym
     fg (f x)
   ∎
--}
