@@ -1,7 +1,7 @@
 {-# OPTIONS --rewriting --without-K #-}
 module Util.Equality where
 
-open import Relation.Binary.PropositionalEquality public hiding ([_])
+open import Relation.Binary.PropositionalEquality public renaming ([_] to reveal)
 open import Function
 open ≡-Reasoning public
 
