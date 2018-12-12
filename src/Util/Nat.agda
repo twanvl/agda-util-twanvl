@@ -19,7 +19,7 @@ open import Data.Empty
 -- Induction utilities
 --------------------------------------------------------------------------------
 
-open import Induction.Nat using () renaming (<-well-founded to <′-well-founded)
+open import Induction.Nat using (<-well-founded)
 open import Induction.WellFounded
 
 map-acc : ∀ {a b r s A B} {R : Rel {a} A r} {S : Rel {b} B s} (f : B → A)
@@ -49,23 +49,16 @@ zip-wf {R = R} {S = S} {T = T} f g trs wf-r wf-s =
          (well-founded wf-r wf-s)
   where open Lexicographic R S renaming (_<_ to _<ˡ_)
 
-<-well-founded : Well-founded _<_
-<-well-founded = map-acc′ ≤⇒≤′ ∘ <′-well-founded
-
 --------------------------------------------------------------------------------
 -- Exposing encapsulated stuff
 --------------------------------------------------------------------------------
 
 open IsCommutativeSemiringWithoutOne ⊔-⊓-0-isCommutativeSemiringWithoutOne public using ()
-  renaming (+-comm to ⊔-comm; +-assoc to ⊔-assoc; +-identity to ⊔-identity; distrib to ⊔-distrib
-           ;*-comm to ⊓-comm; *-assoc to ⊓-assoc)
-open IsCommutativeSemiring isCommutativeSemiring public
-  using (+-comm; +-assoc; +-identity; *-comm; *-assoc; *-identity)
-  renaming (zero to *-zero)
-open DecTotalOrder Nat.decTotalOrder public using ()
-  renaming (refl to ≤-refl; trans to ≤-trans; reflexive to ≤-reflexive; antisym to ≤-antisym; total to _≤?≥_)
+  renaming (distrib to ⊔-distrib)
+open DecTotalOrder ≤-decTotalOrder public using ()
+  renaming (total to _≤?≥_)
 open StrictTotalOrder strictTotalOrder public using ()
-  renaming (compare to compare'; irrefl to <-irrefl)
+  renaming (compare to compare')
 
 -- rewrites
 +-identity₂ : ∀ x → x + 0 ≡ x
@@ -145,14 +138,6 @@ m <?≥ n with n ≤? m
 ... | yes n≤m = inj₂ n≤m
 ... | no ¬n≤m = inj₁ (≰⇒> ¬n≤m)
 
-<⇒≢ : _<_ ⇒ _≢_
-<⇒≢ {zero} {suc j} (s≤s x) = \()
-<⇒≢ {suc i} {suc j} (s≤s x) = <⇒≢ x ∘ cong pred
-
-<⇒≱ : _<_ ⇒ _≱_
-<⇒≱ (s≤s z≤n) = \()
-<⇒≱ (s≤s (s≤s x)) = <⇒≱ (s≤s x) ∘ ≤-pred
-
 from-z≤n : ∀ {m} → m ≤ 0 → m ≡ 0
 from-z≤n z≤n = refl
 
@@ -207,9 +192,6 @@ m ≤′? n with m ≤? n
 --------------------------------------------------------------------------------
 -- Properties of ⊔
 --------------------------------------------------------------------------------
-
-n≤m⊔n : ∀ m n → n ≤ m ⊔ n
-n≤m⊔n m n rewrite ⊔-comm m n = m≤m⊔n n m
 
 ⊔≤ : ∀ {m n o} → m ≤ o → n ≤ o → m ⊔ n ≤ o
 ⊔≤ z≤n n≤o = n≤o
@@ -288,9 +270,6 @@ n⊔n≤n {n} = ≤-reflexive (n⊔n≡n n)
 --------------------------------------------------------------------------------
 -- Properties of ⊓
 --------------------------------------------------------------------------------
-
-m⊓n≤n : ∀ m n → m ⊓ n ≤ n
-m⊓n≤n m n rewrite ⊓-comm m n = m⊓n≤m n m
 
 ≤⊓ : ∀ {m n o} → m ≤ n → m ≤ o → m ≤ n ⊓ o
 ≤⊓ z≤n m≤o = z≤n
